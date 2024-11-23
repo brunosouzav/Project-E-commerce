@@ -17,6 +17,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(of = "userId")
 public class User implements Serializable{
 	
@@ -45,7 +47,7 @@ public class User implements Serializable{
 	private String email;
 	
 	@NotNull
-	@Size(min = 3, max = 20, message = "Senha deve ter entre 3 e 20 caracteres.")
+	
 	private String password;
     
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
