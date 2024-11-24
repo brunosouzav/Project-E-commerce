@@ -2,6 +2,7 @@ package com.EcommerceProject.myBussiness.service;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -55,8 +56,13 @@ public class UserService {
 
     
     public void createUser(CreateUserDto createUserDto) {
-
-        
+    	
+    	Optional<User> existingUser = userRepository.findByEmail(createUserDto.email());
+    	if (existingUser != null) {
+    		
+    		throw new RuntimeException("Email já cadastrado");
+    	} 
+    		
         User newUser = User.builder()
                 .email(createUserDto.email())
                 .password(securityConfig.passwordEncoder().encode(createUserDto.password()))
