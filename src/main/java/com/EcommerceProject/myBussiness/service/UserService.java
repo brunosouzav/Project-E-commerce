@@ -39,6 +39,11 @@ public class UserService {
     @Autowired 
     private EmailService emailService;
     
+    
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+    
     public RecoveryJwtTokenDto authenticateUser(LoginUserDto loginUserDto) {
        
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
@@ -58,15 +63,17 @@ public class UserService {
     public void createUser(CreateUserDto createUserDto) {
     	
     	Optional<User> existingUser = userRepository.findByEmail(createUserDto.email());
-    	if (existingUser != null) {
+    	if (existingUser.isPresent()) {
     		
     		throw new RuntimeException("Email já cadastrado");
     	} 
     		
+    	Role role = Role.builder().name(createUserDto.role()).build();
         User newUser = User.builder()
+        		.userName(createUserDto.userName())
                 .email(createUserDto.email())
                 .password(securityConfig.passwordEncoder().encode(createUserDto.password()))
-                .roles(List.of(Role.builder().name(createUserDto.role()).build()))
+                .roles(List.of(role))
                 .build();
 
         	

@@ -21,9 +21,9 @@ public class SecurityConfig {
 	@Autowired
 	private UserAuthenticationFilter userAuthenticationFilter;
 
-	public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = { "/users/login", "/users" };
+	public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {"/api/users/login", "/api/users" };
 
-	public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = { "/api/email/sendEmail" };
+	public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {"/api/email/sendEmail" };
 
 	
 	
@@ -32,7 +32,8 @@ public class SecurityConfig {
 		httpSecurity.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth.requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED)
-						.permitAll().requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).hasRole("ADMIN")
+						.permitAll()
+						.requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/api/products").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
 	                    .requestMatchers(HttpMethod.PUT, "/api/products").hasRole("ADMIN")

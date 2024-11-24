@@ -1,8 +1,11 @@
 package com.EcommerceProject.myBussiness.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.EcommerceProject.myBussiness.dto.CreateUserDto;
 import com.EcommerceProject.myBussiness.dto.LoginUserDto;
 import com.EcommerceProject.myBussiness.dto.RecoveryJwtTokenDto;
+import com.EcommerceProject.myBussiness.model.User;
 import com.EcommerceProject.myBussiness.service.UserService;
 
 @RestController
@@ -20,6 +24,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+    
     @PostMapping("/login")
     public ResponseEntity<RecoveryJwtTokenDto> authenticateUser(@RequestBody LoginUserDto loginUserDto) {
         RecoveryJwtTokenDto token = userService.authenticateUser(loginUserDto);
