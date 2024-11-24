@@ -14,7 +14,7 @@ import com.EcommerceProject.myBussiness.dto.RecoveryJwtTokenDto;
 import com.EcommerceProject.myBussiness.service.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
