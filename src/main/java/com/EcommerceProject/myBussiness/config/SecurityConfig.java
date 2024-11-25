@@ -21,9 +21,9 @@ public class SecurityConfig {
 	@Autowired
 	private UserAuthenticationFilter userAuthenticationFilter;
 
-	public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {"/api/users/login", "/api/users" };
+	public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {"/api/users/login", "/api/users"};
 
-	public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {"/api/email/sendEmail" };
+	public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {"/api/email/sendEmail"};
 
 	
 	
@@ -31,15 +31,24 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(auth -> auth.requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED)
-						.permitAll()
+				.authorizeHttpRequests(auth -> auth.requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
 						.requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).hasRole("ADMIN")
-						.requestMatchers(HttpMethod.GET, "/api/products").permitAll()
-						.requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
-	                    .requestMatchers(HttpMethod.PUT, "/api/products").hasRole("ADMIN")
-	                    .requestMatchers(HttpMethod.DELETE, "/api/products").hasRole("ADMIN")
+						 
 						
-	                    .anyRequest().denyAll())
+						.requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+				        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+				        
+				        .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
+				        .requestMatchers(HttpMethod.POST, "/api/categories").hasRole("ADMIN")
+				        
+				        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+				        .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
+				        
+				        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+				        .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
+				        
+				        
+				        .anyRequest().denyAll())
 				.addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return httpSecurity.build();

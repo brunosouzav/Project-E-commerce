@@ -38,7 +38,8 @@ public class UserAuthenticationFilter extends OncePerRequestFilter{
 	            
 	            if (token != null) {
 	                String subject = jwtTokenService.getSubjectFromToken(token); 
-	                User user = userRepository.findByEmail(subject).get();
+	                User user = userRepository.findByEmail(subject)
+	                           .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 	                UserDetailsImpl userDetails = new UserDetailsImpl(user); 
 	                
 	                Authentication authentication =
