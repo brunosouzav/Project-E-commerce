@@ -14,6 +14,8 @@ import com.EcommerceProject.myBussiness.dto.CreateUserDto;
 import com.EcommerceProject.myBussiness.dto.EmailDto;
 import com.EcommerceProject.myBussiness.dto.LoginUserDto;
 import com.EcommerceProject.myBussiness.dto.RecoveryJwtTokenDto;
+import com.EcommerceProject.myBussiness.exceptions.EmailAlreadyRegisteredException;
+import com.EcommerceProject.myBussiness.exceptions.LoginNotFoundException;
 import com.EcommerceProject.myBussiness.model.Role;
 import com.EcommerceProject.myBussiness.model.User;
 import com.EcommerceProject.myBussiness.model.UserDetailsImpl;
@@ -46,6 +48,17 @@ public class UserService {
     
     public RecoveryJwtTokenDto authenticateUser(LoginUserDto loginUserDto) {
        
+    	 if (loginUserDto.email() == null || loginUserDto.email().isBlank()) {
+    	        throw new LoginNotFoundException("Email cannot be null or empty.");
+    	    }
+
+    	   
+    	    Optional<User> existingUser = userRepository.findByEmail(loginUserDto.email());
+    	    if (existingUser.isEmpty()) {
+    	        throw new LoginNotFoundException("Email not found in the system.");
+    	    }
+
+    	
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(loginUserDto.email(), loginUserDto.password());
 
@@ -65,7 +78,7 @@ public class UserService {
     	Optional<User> existingUser = userRepository.findByEmail(createUserDto.email());
     	if (existingUser.isPresent()) {
     		
-    		throw new RuntimeException("Email já cadastrado");
+    		throw new EmailAlreadyRegisteredException();
     	} 
     		
     	Role role = Role.builder().name(createUserDto.role()).build();
@@ -76,7 +89,6 @@ public class UserService {
                 .roles(List.of(role))
                 .build();
 
-        	
         userRepository.save(newUser);
         
         EmailDto emailDto = new EmailDto(
